@@ -145,7 +145,7 @@ if 'pedati_out' in st.session_state:
     st.download_button("📥 Download Word (.docx)", doc_file, f"PEDATI_{u_topic}.docx")
 
 # --- FOOTER SECTION ---
-st.markdown("---") # Adds a horizontal line
+st.markdown("---") 
 st.markdown(
     """
     <div style='text-align: center; color: grey; font-size: 0.8em;'>
@@ -154,6 +154,6 @@ st.markdown(
         <p>© 2026 PTES Academic Innovation</p>
     </div>
     """,
-    unsafe_allow_stdio=True, # Note: Use unsafe_allow_html=True in actual Streamlit
     unsafe_allow_html=True
 )
+
