@@ -149,11 +149,12 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: grey; font-size: 0.8em;'>
-        <p><b>Smart PEDATI AI-Generator v1.0</b></p>
-        <p>Developed & Conceptualized by: <b>[Your Full Name]</b></p>
-        <p>© 2026 PTES Academic Innovation</p>
+        <p><b>Smart PEDATI Lesson Plan AI-Generator v1.0</b></p>
+        <p>Developed & Conceptualized by: <b>[Hajah Nurul Haziqah @ Hjh Hartini Hj Nordin]</b></p>
+        <p>© 2026 PTES Academic Innovation Computer Science</p>
     </div>
     """,
     unsafe_allow_html=True
 )
+
 
