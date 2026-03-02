@@ -141,4 +141,19 @@ if 'pedati_out' in st.session_state:
     st.divider()
     st.text_area("AI Preview", st.session_state['pedati_out'], height=300)
     doc_file = create_word_export(u_topic, u_syllabus, st.session_state['pedati_out'])
+
     st.download_button("📥 Download Word (.docx)", doc_file, f"PEDATI_{u_topic}.docx")
+
+# --- FOOTER SECTION ---
+st.markdown("---") # Adds a horizontal line
+st.markdown(
+    """
+    <div style='text-align: center; color: grey; font-size: 0.8em;'>
+        <p><b>Smart PEDATI AI-Generator v1.0</b></p>
+        <p>Developed & Conceptualized by: <b>[Your Full Name]</b></p>
+        <p>© 2026 PTES Academic Innovation</p>
+    </div>
+    """,
+    unsafe_allow_stdio=True, # Note: Use unsafe_allow_html=True in actual Streamlit
+    unsafe_allow_html=True
+)
