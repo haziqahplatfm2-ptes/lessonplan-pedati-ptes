@@ -106,13 +106,6 @@ def create_word_export(topic, syllabus, text, links):
                     row[2].text = p[2].split(":")[-1].strip()
         
         # SPECIAL BOXING: DIGITAL CITIZENSHIP & HOTS (Single Column Highlighted)
-        #elif "DIGITAL CITIZENSHIP" in title.upper() or "HOTS" in title.upper():
-        #    table = doc.add_table(rows=1, cols=1)
-        #    table.style = 'Table Grid'
-        #    prefix = "🧠 HOTS Questions:" if "HOTS" in title.upper() else "💡 Digital Habits:"
-        #    table.cell(0,0).text = f"{prefix}\n" + "\n".join([l.strip() for l in content_lines if l.strip()])
-
-        # SPECIAL BOXING: DIGITAL CITIZENSHIP & HOTS (Single Column Highlighted)
         elif "DIGITAL CITIZENSHIP" in title.upper() or "HOTS" in title.upper():
             table = doc.add_table(rows=1, cols=1)
             table.style = 'Table Grid'
@@ -123,12 +116,6 @@ def create_word_export(topic, syllabus, text, links):
             
             table.cell(0,0).text = f"{prefix}\n" + clean_text
         
-        # STANDARD BOXING: Objectives, Outcomes, Success Criteria, Keywords
-        #else:
-        #    table = doc.add_table(rows=1, cols=1)
-        #    table.style = 'Table Grid'
-        #    table.cell(0, 0).text = "\n".join([l.strip() for l in content_lines if l.strip()])
-
         # STANDARD BOXING: Others
         else:
             table = doc.add_table(rows=1, cols=1)
