@@ -88,8 +88,9 @@ def create_word_export(topic, syllabus, text, links):
         content_lines = lines[1:]
         
         doc.add_heading(title.title(), level=1)
-        
-        # --- NEW 2-COLUMN BOXING FOR PEDATI STAGES ---
+
+        ############################################################
+        # --- FIXED: SEPARATE BOXES FOR EACH PEDATI STAGE ---
         if "|" in section and "PEDATI" in title.upper():
             for line in content_lines:
                 if "|" in line:
@@ -100,11 +101,11 @@ def create_word_export(topic, syllabus, text, links):
                     sb_text = p[1].split(":")[-1].replace("*", "").replace("#", "").strip()
                     cb_text = p[2].split(":")[-1].replace("*", "").replace("#", "").strip()
                     
-                    # Add Stage Label
+                    # 1. Add Stage Label ABOVE the box
                     p_stage = doc.add_paragraph()
-                    p_stage.add_run(f"\n{stage_name}").bold = True
+                    p_stage.add_run(f"\nSTAGE: {stage_name}").bold = True
                     
-                    # Create 2-column table
+                    # 2. Create a NEW 2-column table for THIS stage only
                     table = doc.add_table(rows=2, cols=2)
                     table.style = 'Table Grid'
                     
@@ -117,6 +118,10 @@ def create_word_export(topic, syllabus, text, links):
                     row_cells = table.rows[1].cells
                     row_cells[0].text = sb_text
                     row_cells[1].text = cb_text
+                    
+                    # 3. Add a small space so the next box doesn't touch this one
+                    doc.add_paragraph()
+        ################################################################
         
         # SPECIAL BOXING: DIGITAL CITIZENSHIP & HOTS
         elif "DIGITAL CITIZENSHIP" in title.upper() or "HOTS" in title.upper():
