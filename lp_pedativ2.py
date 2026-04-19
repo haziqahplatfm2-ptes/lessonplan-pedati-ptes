@@ -113,10 +113,18 @@ def create_word_export(topic, syllabus, text, links):
             table.cell(0,0).text = f"{prefix}\n" + "\n".join([l.strip() for l in content_lines if l.strip()])
 
         # STANDARD BOXING: Objectives, Outcomes, Success Criteria, Keywords
+        #else:
+        #    table = doc.add_table(rows=1, cols=1)
+        #    table.style = 'Table Grid'
+        #    table.cell(0, 0).text = "\n".join([l.strip() for l in content_lines if l.strip()])
+
+        # STANDARD BOXING: Others
         else:
             table = doc.add_table(rows=1, cols=1)
             table.style = 'Table Grid'
-            table.cell(0, 0).text = "\n".join([l.strip() for l in content_lines if l.strip()])
+            # This clean_text line removes all # symbols
+            clean_text = "\n".join([l.strip().replace("#", "") for l in content_lines if l.strip()])
+            table.cell(0, 0).text = clean_text
 
     # 4. HOD Approval Section
     doc.add_page_break()
