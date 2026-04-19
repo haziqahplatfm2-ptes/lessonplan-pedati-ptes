@@ -160,6 +160,6 @@ st.markdown(
         <p>Developed & Conceptualized by: <b>Hajah Nurul Haziqah @ Hjh Hartini Hj Nordin</b></p>
         <p>© 2026 PTES Academic Innovation Computer Science</p>
     </div>
-    """,
+    """,  # <--- CRITICAL: YOU MUST HAVE THIS COMMA HERE
     unsafe_allow_html=True
 )
