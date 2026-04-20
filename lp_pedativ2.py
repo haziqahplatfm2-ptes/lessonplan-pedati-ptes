@@ -5,33 +5,37 @@ from docx.shared import Pt
 from io import BytesIO
 
 # --- 1. CONFIGURATION ---
+# Using your verified new API Key
+#genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+# This fetches the key safely from your secrets file
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
 @st.cache_resource
 def find_working_model():
-    """Universal loader to find a working model."""
+    """Universal loader to find a working model and avoid 404 version errors."""
     try:
+        # This lists all models available to your specific API key/version
         for m in genai.list_models():
             if 'generateContent' in m.supported_generation_methods:
                 return m.name
     except:
-        return "models/gemini-1.5-flash"
+        return "models/gemini-1.5-flash"  # Fallback
     return "models/gemini-1.5-flash"
+
 
 selected_model_name = find_working_model()
 model = genai.GenerativeModel(selected_model_name)
 
-def generate_pedati_plan(topic, syllabus, extra_context, links):
-    """AI Prompt logic for PEDATI + Digital Citizenship + HOTS."""
+
+def generate_pedati_plan(topic, syllabus, extra_context):
+    # Prompt specifically locked to English and PEDATI titles
     prompt = f"""
-    Topic: {topic}. Syllabus Code: {syllabus}. 
-    Tutor Resources/Links: {links}.
-    Context: {extra_context}.
+    Topic: {topic}. Syllabus Code: {syllabus}. Context: {extra_context}.
+    Generate a lesson plan in English. 
+    NO Malay terms. Use these exact stage names:
+    P [Prior Knowledge], E [Engage], D [Develop], A [Apply], T [Test], I [Improve].
 
-    Generate a comprehensive lesson plan in English. 
-    Use these exact stage names: P [Prior Knowledge], E [Engage], D [Develop], A [Apply], T [Test], I [Improve].
-
-    REQUIRED SECTIONS:
+    Structure with these markers for boxing:
     SECTION: LESSON OBJECTIVES
     [4 points]
     SECTION: LESSON OUTCOMES
@@ -41,13 +45,11 @@ def generate_pedati_plan(topic, syllabus, extra_context, links):
     SECTION: PREREQUISITE
     [1 point]
     SECTION: KEYWORDS
-    [10 items]
-    
+    [6 items]
     SECTION: HOTS
-    Generate 3 specific Higher Order Thinking Skills (HOTS) questions based on Bloom's Taxonomy.
-
+    [any 4 main domains in the Bloom's taxonomy]
     SECTION: DIGITAL CITIZENSHIP
-    Based on {links}, generate 3-4 good digital habits.
+    [4 points on the use of online resources like youtube channel or canva application or use of chromebooks or use of digital devices]
 
     SECTION: PEDATI STAGES
     STAGE: P [Prior Knowledge] | SB: [Activity] | CB: [Activity]
@@ -63,13 +65,13 @@ def generate_pedati_plan(topic, syllabus, extra_context, links):
     except Exception as e:
         return f"System Error: {str(e)}"
 
-def create_word_export(topic, syllabus, text, links):
-    """Generates Word Doc with the 3-row stacked PEDATI format."""
+
+def create_word_export(topic, syllabus, text):
     doc = Document()
     doc.add_heading(f'Lesson Plan: {topic} ({syllabus})', 0)
 
-    # 1. Admin Header Table
-    admin_table = doc.add_table(rows=3, cols=4)
+    # 1. Admin Header Table (6-field layout)
+    admin_table = doc.add_table(rows=3, cols=4);
     admin_table.style = 'Table Grid'
     labels = [["Week No :", "Date:"], ["No. of Students:", "Day:"], ["Venue / Lab No:", "Duration (mins):"]]
     for r in range(3):
@@ -78,111 +80,89 @@ def create_word_export(topic, syllabus, text, links):
     doc.add_paragraph()
 
     # 2. Resources Table
-    doc.add_heading("Resources & Online Links", level=1)
-    res_table = doc.add_table(rows=1, cols=1)
+    doc.add_heading("Resources & Materials", level=1)
+    res_table = doc.add_table(rows=1, cols=1);
     res_table.style = 'Table Grid'
-    res_table.cell(0, 0).text = f"Hardware: Smart board, Chromebook, Projector.\nLinks/Resources: {links}"
+    res_table.cell(0, 0).text = "Smart board, Chromebook, Writing table, Projector, Screen share with laptop"
 
-    # 3. Content Parsing
+    # 3. Content Parsing & Table Boxing
     sections = text.split('SECTION:')
     for section in sections:
         if not section.strip(): continue
         lines = section.strip().split('\n')
-        title = lines[0].strip().replace("*", "").replace("#", "")
+        title = lines[0].strip()
         content_lines = lines[1:]
-        
         doc.add_heading(title.title(), level=1)
-        
-        # --- THE 3-ROW STACKED BOXING FOR PEDATI ---
+
         if "|" in section and "PEDATI" in title.upper():
+            table = doc.add_table(rows=1, cols=3);
+            table.style = 'Table Grid'
+            hdr = table.rows[0].cells
+            hdr[0].text, hdr[1].text, hdr[2].text = 'Stage (PEDATI)', 'Facilitator (SB)', 'Student (CB)'
+
             for line in content_lines:
                 if "|" in line:
                     p = line.split("|")
-                    
-                    # Clean the text strings
-                    stg = p[0].split(":")[-1].replace("*", "").replace("#", "").strip()
-                    sb = p[1].split(":")[-1].replace("*", "").replace("#", "").strip()
-                    cb = p[2].split(":")[-1].replace("*", "").replace("#", "").strip()
-                    
-                    # Create 3-row, 1-column table
-                    table = doc.add_table(rows=3, cols=1)
-                    table.style = 'Table Grid'
-                    
-                    # Row 1: Stage Title
-                    cell0 = table.cell(0, 0)
-                    cell0.text = f"STAGE: {stg}"
-                    cell0.paragraphs[0].runs[0].bold = True
-                    
-                    # Row 2: SB Activity
-                    table.cell(1, 0).text = f"SB: {sb}"
-                    
-                    # Row 3: CB Activity
-                    table.cell(2, 0).text = f"CB: {cb}"
-                    
-                    doc.add_paragraph() # Spacer between stages
-
-        # BOXING for HOTS & Digital Citizenship
-        elif "DIGITAL CITIZENSHIP" in title.upper() or "HOTS" in title.upper():
-            table = doc.add_table(rows=1, cols=1)
-            table.style = 'Table Grid'
-            prefix = "🧠 HOTS Questions:" if "HOTS" in title.upper() else "💡 Digital Habits:"
-            clean_text = "\n".join([l.strip().replace("#", "").replace("*", "") for l in content_lines if l.strip()])
-            table.cell(0,0).text = f"{prefix}\n" + clean_text
-        
-        # STANDARD BOXING for everything else
+                    row = table.add_row().cells
+                    row[0].text = p[0].split(":")[-1].strip()
+                    row[1].text = p[1].split(":")[-1].strip()
+                    row[2].text = p[2].split(":")[-1].strip()
         else:
-            table = doc.add_table(rows=1, cols=1)
+            table = doc.add_table(rows=1, cols=1);
             table.style = 'Table Grid'
-            clean_text = "\n".join([l.strip().replace("#", "").replace("*", "") for l in content_lines if l.strip()])
-            table.cell(0, 0).text = clean_text
+            table.cell(0, 0).text = "\n".join([l.strip() for l in content_lines if l.strip()])
 
-    # 4. HOD Approval Section
+    # 4. HOD Approval Page
     doc.add_page_break()
     doc.add_heading("HOD Approval & Remarks", level=1)
-    hod_table = doc.add_table(rows=3, cols=2)
+    hod_table = doc.add_table(rows=3, cols=2);
     hod_table.style = 'Table Grid'
-    hod_table.cell(0, 0).text = "Remark"; hod_table.cell(0, 1).text = "Signature / Stamp"
+    hod_table.cell(0, 0).text = "Remark";
+    hod_table.cell(0, 1).text = "Signature / Stamp"
     hod_table.rows[1].height = Pt(60)
-    hod_table.cell(2, 0).text = "Date:"; hod_table.cell(2, 1).text = "Name:"
+    hod_table.cell(2, 0).text = "Date:";
+    hod_table.cell(2, 1).text = "Name:"
 
-    bio = BytesIO()
-    doc.save(bio)
+    bio = BytesIO();
+    doc.save(bio);
     bio.seek(0)
     return bio
 
-# --- 2. GUI SECTION ---
-st.set_page_config(page_title="PEDATI Master v2.2", layout="wide")
-st.title("🎓 PEDATI Lesson Plan Generator v2.2")
+
+# --- 2. GUI ---
+st.set_page_config(page_title="PEDATI Master Planner", layout="wide")
+st.title("🎓 PEDATI Lesson Plan Generator")
 st.info(f"System connected via: {selected_model_name}")
-st.markdown("---")
 
 c1, c2 = st.columns(2)
 with c1: u_topic = st.text_input("Lesson Topic:")
 with c2: u_syllabus = st.text_input("Syllabus Code:")
+u_extra = st.text_area("Specific Context/Keywords (Optional):")
 
-u_links = st.text_area("Online Resource Links:", placeholder="Paste links here...")
-u_extra = st.text_area("Extra Context (Optional):")
-
-if st.button("🚀 GENERATE PEDATI PLAN"):
+if st.button("🚀 GENERATE PEDATI LESSON PLAN"):
     if u_topic and u_syllabus:
-        with st.spinner("AI is crafting your upgraded PEDATI plan..."):
-            result = generate_pedati_plan(u_topic, u_syllabus, u_extra, u_links)
+        with st.spinner("AI is building your PEDATI plan..."):
+            result = generate_pedati_plan(u_topic, u_syllabus, u_extra)
             st.session_state['pedati_out'] = result
 
 if 'pedati_out' in st.session_state:
     st.divider()
     st.text_area("AI Preview", st.session_state['pedati_out'], height=300)
-    doc_file = create_word_export(u_topic, u_syllabus, st.session_state['pedati_out'], u_links)
-    st.download_button("📥 Download Upgraded Word (.docx)", doc_file, f"PEDATI_V2.2_{u_topic}.docx")
+    doc_file = create_word_export(u_topic, u_syllabus, st.session_state['pedati_out'])
 
+    st.download_button("📥 Download Word (.docx)", doc_file, f"PEDATI_{u_topic}.docx")
+
+# --- FOOTER SECTION ---
 st.markdown("---") 
 st.markdown(
     """
     <div style='text-align: center; color: grey; font-size: 0.8em;'>
-        <p><b>Smart PEDATI Lesson Plan AI-Generator v2.2</b></p>
-        <p>Developed & Conceptualized by: <b>Hajah Nurul Haziqah @ Hjh Hartini Hj Nordin</b></p>
+        <p><b>Smart PEDATI Lesson Plan AI-Generator v1.0</b></p>
+        <p>Developed & Conceptualized by: <b>[Hajah Nurul Haziqah @ Hjh Hartini Hj Nordin]</b></p>
         <p>© 2026 PTES Academic Innovation Computer Science</p>
     </div>
     """,
     unsafe_allow_html=True
 )
+
+
