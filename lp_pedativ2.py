@@ -32,10 +32,16 @@ def generate_pedati_plan(topic, syllabus, extra_context, links):
     Use these exact stage names: P [Prior Knowledge], E [Engage], D [Develop], A [Apply], T [Test], I [Improve].
 
     REQUIRED SECTIONS:
-    SECTION: OBJECTIVES
-    SECTION: OUTCOMES
+    SECTION: LESSON OBJECTIVES
+    [4 points]
+    SECTION: LESSON OUTCOMES
+    [4 points]
     SECTION: SUCCESS CRITERIA
+    [4 points]
+    SECTION: PREREQUISITE
+    [1 point]
     SECTION: KEYWORDS
+    [10 items]
     
     SECTION: HOTS
     Generate 3 specific Higher Order Thinking Skills (HOTS) questions based on Bloom's Taxonomy.
