@@ -36,12 +36,20 @@ def generate_pedati_plan(topic, syllabus, extra_context):
     P [Prior Knowledge], E [Engage], D [Develop], A [Apply], T [Test], I [Improve].
 
     Structure with these markers for boxing:
-    SECTION: OBJECTIVES
-    SECTION: OUTCOMES
+    SECTION: LESSON OBJECTIVES
+    [4 points]
+    SECTION: LESSON OUTCOMES
+    [4 points]
     SECTION: SUCCESS CRITERIA
+    [4 points]
     SECTION: PREREQUISITE
+    [1 point]
     SECTION: KEYWORDS
+    [6 items]
     SECTION: HOTS
+    [any 4 main domains in the Bloom's taxonomy]
+    SECTION: DIGITAL CITIZENSHIP
+    [4 points on the use of online resources like youtube channel or canva application or use of chromebooks or use of digital devices]
 
     SECTION: PEDATI STAGES
     STAGE: P [Prior Knowledge] | SB: [Activity] | CB: [Activity]
