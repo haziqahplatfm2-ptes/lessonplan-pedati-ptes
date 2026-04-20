@@ -128,9 +128,33 @@ def create_word_export(topic, syllabus, text):
     bio.seek(0)
     return bio
 
-
-# --- 2. GUI ---
+#############################################################################
+# --- 2. GUI SECTION ---
 st.set_page_config(page_title="PEDATI Master Planner", layout="wide")
+
+# --- NEW SIDEBAR CODE ---
+with st.sidebar:
+    st.title("📖 User Guide")
+    st.info("How to use this portal:")
+    
+    st.markdown("""
+    ### 1. Fill Details
+    Enter your **Lesson Topic** and **Syllabus Code**. Use the **Context** box for specific requirements like "Group Work" or "Case Study."
+    
+    ### 2. Generate
+    Click **🚀 GENERATE** and wait for the AI to draft your plan.
+    
+    ### 3. Review & Save
+    Check the **AI Preview**. If it looks good, click **📥 Download Word** to get your professional doc.
+    
+    ---
+    ### 💡 Pro-Tip
+    If the AI gets cut off, try adding more specific keywords in the Context box to guide it!
+    """)
+    st.markdown("---")
+    st.caption("App Version 2.0 | PTES Innovation")
+
+# --- MAIN DASHBOARD (Restored from your original) ---
 st.title("🎓 PEDATI Lesson Plan Generator")
 st.info(f"System connected via: {selected_model_name}")
 
@@ -149,7 +173,6 @@ if 'pedati_out' in st.session_state:
     st.divider()
     st.text_area("AI Preview", st.session_state['pedati_out'], height=300)
     doc_file = create_word_export(u_topic, u_syllabus, st.session_state['pedati_out'])
-
     st.download_button("📥 Download Word (.docx)", doc_file, f"PEDATI_{u_topic}.docx")
 
 # --- FOOTER SECTION ---
@@ -157,12 +180,12 @@ st.markdown("---")
 st.markdown(
     """
     <div style='text-align: center; color: grey; font-size: 0.8em;'>
-        <p><b>Smart PEDATI Lesson Plan AI-Generator v1.0</b></p>
-        <p>Developed & Conceptualized by: <b>[Hajah Nurul Haziqah @ Hjh Hartini Hj Nordin]</b></p>
+        <p><b>Smart PEDATI Lesson Plan AI-Generator v2.0</b></p>
+        <p>Developed & Conceptualized by: <b>Hajah Nurul Haziqah @ Hjh Hartini Hj Nordin</b></p>
         <p>© 2026 PTES Academic Innovation Computer Science</p>
     </div>
     """,
     unsafe_allow_html=True
 )
-
+#############################################################################
 
