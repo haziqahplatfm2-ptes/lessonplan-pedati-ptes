@@ -139,7 +139,7 @@ with st.sidebar:
     
     st.markdown("""
     ### 1. Fill Details
-    Enter your **Lesson Topic** and **Syllabus Code**. Use the **Context** box for specific requirements like "Group Work" or "Case Study."
+    Enter your **Lesson Topic** and **Syllabus Code**. Use the **Context** box for specific requirements like "Group Work" or "Case Study" or "Youtube link" or "Online LMS"
     
     ### 2. Generate
     Click **🚀 GENERATE** and wait for the AI to draft your plan.
