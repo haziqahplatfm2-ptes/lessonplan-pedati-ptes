@@ -98,7 +98,7 @@ def create_word_export(topic, syllabus, text):
             table = doc.add_table(rows=1, cols=3);
             table.style = 'Table Grid'
             hdr = table.rows[0].cells
-            hdr[0].text, hdr[1].text, hdr[2].text = 'Stage (PEDATI)', 'Facilitator (SB)', 'Student (CB)'
+            hdr[0].text, hdr[1].text, hdr[2].text = 'Stage (PEDATI)', 'Activity One ', 'Activity Two '
 
             for line in content_lines:
                 if "|" in line:
