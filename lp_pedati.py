@@ -1,3 +1,4 @@
+#This is the actual python script used for the lesson planner generator of PEDATI pedagogy
 import streamlit as st
 import google.generativeai as genai
 from docx import Document
