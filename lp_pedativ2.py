@@ -52,12 +52,12 @@ def generate_pedati_plan(topic, syllabus, extra_context):
     [4 points on the use of online resources like youtube channel or canva application or use of chromebooks or use of digital devices]
 
     SECTION: PEDATI STAGES
-    STAGE: P [Prior Knowledge] | SB: [Activity] | CB: [Activity]
-    STAGE: E [Engage] | SB: [Activity] | CB: [Activity]
-    STAGE: D [Develop] | SB: [Activity] | CB: [Activity]
-    STAGE: A [Apply] | SB: [Activity] | CB: [Activity]
-    STAGE: T [Test] | SB: [Activity] | CB: [Activity]
-    STAGE: I [Improve] | SB: [Activity] | CB: [Activity]
+    STAGE: P [Prior Knowledge] | CB: [Activity] | SB: [Activity]
+    STAGE: E [Engage] | CB: [Activity] | SB: [Activity]
+    STAGE: D [Develop] | CB: [Activity] | SB: [Activity]
+    STAGE: A [Apply] | CB: [Activity] | SB: [Activity]
+    STAGE: T [Test] | CB: [Activity] | SB: [Activity]
+    STAGE: I [Improve] | CB: [Activity] | SB: [Activity]
     """
     try:
         response = model.generate_content(prompt)
@@ -98,7 +98,7 @@ def create_word_export(topic, syllabus, text):
             table = doc.add_table(rows=1, cols=3);
             table.style = 'Table Grid'
             hdr = table.rows[0].cells
-            hdr[0].text, hdr[1].text, hdr[2].text = 'Stage (PEDATI)', 'Facilitator (SB)', 'Student (CB)'
+            hdr[0].text, hdr[1].text, hdr[2].text = 'Stage (PEDATI)', 'Facilitator (CB)', 'Student (SB)'
 
             for line in content_lines:
                 if "|" in line:
