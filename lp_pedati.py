@@ -322,6 +322,7 @@ if 'pedati_out' in st.session_state:
     doc_file = create_word_export(u_topic, u_syllabus, st.session_state['pedati_out'])
     st.download_button("📥 Download Word (.docx)", doc_file, f"PEDATI_{u_topic}.docx")
 
+# --- FOOTER SECTION ---
 st.markdown("---") 
 st.markdown(
     """
@@ -331,5 +332,5 @@ st.markdown(
         <p>© 2026 PTES Academic Innovation Computer Science</p>
     </div>
     """,
-    unsafe_allow_title=True, unsafe_allow_html=True
+    unsafe_allow_html=True  #  Fixed: Clean parameter
 )
